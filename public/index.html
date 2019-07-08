@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <script>
+    // if ("serviceWorker" in navigator) {
+    //   navigator.serviceWorker.register("/sw.js");
+    // }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const fi = document.getElementById("file");
+      const file = fi.files[0];
+      const fd = new FormData();
+      const name = `import.txt`;
+
+      try {
+        newFile = new File([file], name, { type: "text/plain" });
+      } catch (e) {
+        newFile = new Blob([file], { type: "text/plain" });
+        newFile.name = name;
+      }
+
+      fd.append("file", newFile);
+      fd.append("name", name);
+
+      fetch("/api/upload", {
+        method: "POST",
+        body: fd
+      })
+        .then(async res => {
+          console.log(res);
+          const body = await res.json();
+          const str = JSON.stringify(body, undefined, 2);
+          console.log(str);
+          document.getElementById("output").innerHTML = str;
+        })
+        .catch(err => console.error(err));
+    }
+
+    function lol() {
+      fetch("/api/lol", {
+        method: "POST",
+        mode: "cors",
+        credentials: "include"
+      });
+    }
+    function mao() {
+      fetch("https://mao.meh.mz:3333/api/lol", {
+        method: "POST",
+        mode: "cors",
+        credentials: "include"
+      });
+    }
+    function kakao() {
+      fetch("https://meh.mz:3333/api/lol", {
+        method: "POST",
+        mode: "cors",
+        credentials: "include"
+      });
+    }
+  </script>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>LOL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <form>
+      <input type="file" name="file" id="file" />
+      <button type="button" onclick="handleSubmit(event)">
+        submit
+      </button>
+    </form>
+    <pre id="output"></pre>
+  </body>
+</html>
